@@ -1,0 +1,12 @@
+{
+  "name": "game-of-life",
+  "version": "1.0.0",
+  "description": "Game of life, angular",
+  "main": "./dist/index.js",
+  "repository": "git@github.com:jindra12/game-of-life.git",
+  "author": "jindra12 <jindra12.underdark@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@angular/cli": "^13.0.3"
+  }
+}
