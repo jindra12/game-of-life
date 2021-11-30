@@ -6,6 +6,8 @@
   "author": "jindra12 <jindra12.underdark@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@angular/cli": "^13.0.3"
+    "@angular/cli": "^13.0.3",
+    "@types/lodash": "^4.14.177",
+    "lodash": "^4.17.21"
   }
 }
