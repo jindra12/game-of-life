@@ -1,9 +1,46 @@
 import { Component, OnInit } from '@angular/core';
-import { BlueComponent } from '../blue/blue.component';
-import { GreenComponent } from '../green/green.component';
-import { PurpleComponent } from '../purple/purple.component';
-import { RedComponent } from '../red/red.component';
 import { Unit } from '../types';
+
+class BlueUnit implements Unit {
+  className = "board-unit board-unit--blue";
+  rule = (neighbours: Unit[]): Unit => {
+    const group = neighbours.filter((n) => n instanceof BlueUnit);
+    if (group.length > 1 && group.length < 4) {
+      return new BlueUnit();
+    }
+    return new RedUnit();
+  }
+}
+
+class RedUnit implements Unit {
+  className = "board-unit board-unit--red";
+  rule = (neighbours: Unit[]): Unit => {
+    if (neighbours.filter(n => n instanceof PurpleUnit).length > 1) {
+      return new PurpleUnit();
+    }
+    return new RedUnit();
+  }
+}
+
+class GreenUnit implements Unit {
+  className = "board-unit board-unit--green";
+  rule = (neighbours: Unit[]): Unit => {
+    if (neighbours.filter(n => n instanceof GreenUnit).length < 1) {
+      return new BlueUnit();
+    }
+    return new GreenUnit();
+  }
+}
+
+class PurpleUnit implements Unit {
+  className = "board-unit board-unit--purple";
+  rule = (neighbours: Unit[]): Unit => {
+    if (neighbours.filter(n => n instanceof PurpleUnit).length > 2) {
+      return new GreenUnit();
+    }
+    return new PurpleUnit();
+  }
+}
 
 @Component({
   selector: 'app-board',
@@ -25,15 +62,15 @@ export class BoardComponent implements OnInit {
       this.board.push([]);
       for (let j = 0; j < boardSize; j++) {
         this.board[i][j] = (() => {
-          switch (Math.floor(Math.random() * 5)) {
+          switch (Math.floor(Math.random() * 4)) {
             case 0:
-              return new BlueComponent();
+              return new BlueUnit();
             case 1:
-              return new RedComponent();
+              return new RedUnit();
             case 2:
-              return new GreenComponent();
+              return new GreenUnit();
             case 3:
-              return new PurpleComponent();
+              return new PurpleUnit();
             default:
               throw new Error("Should never happen");
           }
@@ -51,7 +88,7 @@ export class BoardComponent implements OnInit {
           const neighbouringUnits: Unit[] = [];
           neighbours.forEach(x => {
             neighbours.forEach(y => {
-              if (x !== 0 && y !== 0 && this.board[i + x][j + y]) {
+              if ((x !== 0 || y !== 0) && this.board[i + x]?.[j + y]) {
                 neighbouringUnits.push(this.board[i + x][j + y]);
               }
             });

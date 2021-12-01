@@ -1,5 +1,4 @@
-import { OnInit } from "@angular/core";
-
-export interface Unit extends OnInit {
+export interface Unit {
+    className: string;
     rule(neighbours: Unit[]): Unit;
 }
