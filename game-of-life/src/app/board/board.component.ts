@@ -25,7 +25,7 @@ class RedUnit implements Unit {
 class GreenUnit implements Unit {
   className = "board-unit board-unit--green";
   rule = (neighbours: Unit[]): Unit => {
-    if (neighbours.filter(n => n instanceof GreenUnit).length < 1) {
+    if (neighbours.filter(n => n instanceof GreenUnit).length < 4) {
       return new BlueUnit();
     }
     return new GreenUnit();
@@ -55,7 +55,7 @@ export class BoardComponent implements OnInit {
 
   ngOnInit(): void {
     let iterations = 0;
-    const maxIterations = 10000;
+    const maxIterations = 5000;
     const intervalSize = 100;
     const boardSize = 50;
     for (let i = 0; i < boardSize; i++) {
@@ -78,6 +78,7 @@ export class BoardComponent implements OnInit {
       }
     }
     const interval = setInterval(() => {
+      iterations++;
       if (iterations === maxIterations) {
         clearInterval(interval);
       }
