@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { clearInterval } from 'timers';
 import { Unit } from '../types';
 
 class BlueUnit implements Unit {
@@ -80,14 +79,14 @@ export class BoardComponent implements OnInit {
 
   run = () => {
     if (!this.running) {
-      this.interval = setInterval(this.runGame, 100); 
+      this.interval = window.setInterval(this.runGame, 100); 
     } else if (this.interval) {
-      clearInterval(this.interval);
+      window.clearInterval(this.interval);
     }
     this.running = !this.running;
   }
 
-  private interval: NodeJS.Timeout | undefined; 
+  private interval: number | undefined; 
 
   private runGame = () => {
     const neighbours = [-1, 0, 1];
