@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { clearInterval } from 'timers';
 import { Unit } from '../types';
 
 class BlueUnit implements Unit {
@@ -50,13 +51,11 @@ class PurpleUnit implements Unit {
 export class BoardComponent implements OnInit {
 
   board: Unit[][] = [];
+  running: boolean = false;
 
   constructor() { }
 
   ngOnInit(): void {
-    let iterations = 0;
-    const maxIterations = 5000;
-    const intervalSize = 100;
     const boardSize = 50;
     for (let i = 0; i < boardSize; i++) {
       this.board.push([]);
@@ -77,27 +76,34 @@ export class BoardComponent implements OnInit {
         })();
       }
     }
-    const interval = setInterval(() => {
-      iterations++;
-      if (iterations === maxIterations) {
-        clearInterval(interval);
-      }
-      const neighbours = [-1, 0, 1];
-      for (let i = 0; i < boardSize; i++) {
-        for (let j = 0; j < boardSize; j++) {
-          const unit = this.board[i][j];
-          const neighbouringUnits: Unit[] = [];
-          neighbours.forEach(x => {
-            neighbours.forEach(y => {
-              if ((x !== 0 || y !== 0) && this.board[i + x]?.[j + y]) {
-                neighbouringUnits.push(this.board[i + x][j + y]);
-              }
-            });
-          });
-          this.board[i][j] = unit.rule(neighbouringUnits);
-        }
-      }
-    }, intervalSize);
   }
 
+  run = () => {
+    if (!this.running) {
+      this.interval = setInterval(this.runGame, 100); 
+    } else if (this.interval) {
+      clearInterval(this.interval);
+    }
+    this.running = !this.running;
+  }
+
+  private interval: NodeJS.Timeout | undefined; 
+
+  private runGame = () => {
+    const neighbours = [-1, 0, 1];
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board.length; j++) {
+        const unit = this.board[i][j];
+        const neighbouringUnits: Unit[] = [];
+        neighbours.forEach(x => {
+          neighbours.forEach(y => {
+            if ((x !== 0 || y !== 0) && this.board[i + x]?.[j + y]) {
+              neighbouringUnits.push(this.board[i + x][j + y]);
+            }
+          });
+        });
+        this.board[i][j] = unit.rule(neighbouringUnits);
+      }
+    }
+  };
 }
