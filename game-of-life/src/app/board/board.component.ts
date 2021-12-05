@@ -61,7 +61,7 @@ export class BoardComponent implements OnInit {
   ngOnInit(): void {}
 
   updateBoard = (rules: CustomSubmitEvent) => {
-    if (rules.boardSize !== this.boardSize) {
+    if (rules.boardSize !== this.boardSize || !this.board.length) {
       this.boardSize = rules.boardSize;
       this.generateBoard();
     }
@@ -73,18 +73,19 @@ export class BoardComponent implements OnInit {
       this.ms = rules.ms;
     }
     this.running = rules.running;
-    if (!this.running && this.interval) {
+    if (!this.running && this.interval !== undefined) {
       window.clearInterval(this.interval);
     }
     if (this.running) {
-      if (this.interval) {
+      if (this.interval && this.interval !== undefined) {
         window.clearInterval(this.interval);
       }
-      window.setInterval(this.runGame, this.ms);
+      this.interval = window.setInterval(this.runGame, this.ms);
     }
   }
 
   private generateBoard = () => {
+    this.board = [];
     for (let i = 0; i < this.boardSize; i++) {
       this.board.push([]);
       for (let j = 0; j < this.boardSize; j++) {
