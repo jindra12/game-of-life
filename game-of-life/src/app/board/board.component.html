@@ -6,5 +6,4 @@
         </td>
     </tr>
 </table>
-
-<button (click)="run()">{{ running ? "Stop the game" : "Run the game" }}</button>
+<app-input [running]="running" (runEvent)="updateBoard($event.value)" />

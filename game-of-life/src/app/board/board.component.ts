@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Unit } from '../types';
+import { CustomSubmitEvent, Unit } from '../types';
 
 class BlueUnit implements Unit {
   className = "board-unit board-unit--blue";
@@ -51,14 +51,43 @@ export class BoardComponent implements OnInit {
 
   board: Unit[][] = [];
   running: boolean = false;
+  
+  private boardSize: number = 50;
+  private ms: number = 100;
+  private interval: number | undefined; 
 
   constructor() { }
 
-  ngOnInit(): void {
-    const boardSize = 50;
-    for (let i = 0; i < boardSize; i++) {
+  ngOnInit(): void {}
+
+  updateBoard = (rules: CustomSubmitEvent) => {
+    if (rules.boardSize !== this.boardSize) {
+      this.boardSize = rules.boardSize;
+      this.generateBoard();
+    }
+    if (rules.ms !== this.ms) {
+      if (this.interval && this.running) {
+        window.clearInterval(this.interval);
+        this.interval = window.setInterval(this.runGame, this.ms);
+      }
+      this.ms = rules.ms;
+    }
+    this.running = rules.running;
+    if (!this.running && this.interval) {
+      window.clearInterval(this.interval);
+    }
+    if (this.running) {
+      if (this.interval) {
+        window.clearInterval(this.interval);
+      }
+      window.setInterval(this.runGame, this.ms);
+    }
+  }
+
+  private generateBoard = () => {
+    for (let i = 0; i < this.boardSize; i++) {
       this.board.push([]);
-      for (let j = 0; j < boardSize; j++) {
+      for (let j = 0; j < this.boardSize; j++) {
         this.board[i][j] = (() => {
           switch (Math.floor(Math.random() * 4)) {
             case 0:
@@ -76,17 +105,6 @@ export class BoardComponent implements OnInit {
       }
     }
   }
-
-  run = () => {
-    if (!this.running) {
-      this.interval = window.setInterval(this.runGame, 100); 
-    } else if (this.interval) {
-      window.clearInterval(this.interval);
-    }
-    this.running = !this.running;
-  }
-
-  private interval: number | undefined; 
 
   private runGame = () => {
     const neighbours = [-1, 0, 1];

@@ -1,0 +1,21 @@
+<div>
+    <label>
+        Size of cell/row
+        <input type="number" #boardSize />
+    </label>
+    <label>
+        Speed of transformation in ms
+        <input type="number" #ms />
+    </label>
+    <label>
+        Should game run?
+        <input type="checkbox" (value)="running" #shouldRun />
+    </label>
+    <label>
+        Submit changes?
+        <button (click)="changeState(ms.value, boardSize.value, shouldRun.value)">
+            Submit
+        </button>
+    </label>
+</div>
+
